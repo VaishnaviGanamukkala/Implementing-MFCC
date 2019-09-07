@@ -43,7 +43,7 @@ framed_signal = transpose(reshape(framed_signal, frame_size, []));
 framedSignal = framed_signal(1,:);
 t1 = 0:1:frame_size-1;
 figure;
-subplot(2, 1, 1);
+subplot(3, 1, 1);
 plot(t1, framedSignal);
 title('First frame (Rectangular)');
 grid;
@@ -53,7 +53,19 @@ grid;
 framed_signal = framed_signal .* transpose(hamming(frame_size));
 
 framedSignal = framed_signal(1,:);
-subplot(2, 1, 2);
+subplot(3, 1, 2);
 plot(t1, framedSignal);
 title('First frame (Hamming)');
+grid;
+
+% n value for n point discrete fourier transform
+n = 2.^(nextpow2(frame_size));
+
+% Each row represents the n-point fourier transform of the corresponding frame
+signal_fft = transpose(fft(transpose(framed_signal), n));
+
+subplot(3, 1, 3);
+t2 = 0:1:n-1;
+plot(t2, signal_fft(1, :));
+title('First frame after applying fourier transform');
 grid;
