@@ -34,32 +34,26 @@ frame_time = 0.02;
 frame_size = floor(frame_time .* fs);
 frames_count = ceil(length(x) / frame_size);
 
-framed_signal = [transpose(x), zeros(1, rem(length(x), frame_size))];
-
-disp(size(framed_signal));
-disp(frame_size);
-
-framed_signal = reshape(x, [], frame_size);
-
-%{
-row = 1;
-for i = 1 : length(x)
-  for j = 1 : frame_size
-    framed_signal(row, j) = x(i);
-    if j == frame_size
-      row += 1;
-    end;
-  end;
-end;
+framed_signal = [transpose(x), zeros(1, (frame_size - rem(length(x), frame_size)))];
 
 
-for i = 1 : row
-  framed_signal(row, :) =  framed_signal(row, :) .* hamming(frame_size);
-end;
-%}
-% Taking Hamming Frames
+% each row corresponds to one frame
+framed_signal = transpose(reshape(framed_signal, frame_size, []));
+
 framedSignal = framed_signal(1,:);
-figure;
 t1 = 0:1:frame_size-1;
-plot(t, framedSignal);
+figure;
+subplot(2, 1, 1);
+plot(t1, framedSignal);
+title('First frame (Rectangular)');
+grid;
+
+
+% Multiplying each frame with hamming values
+framed_signal = framed_signal .* transpose(hamming(frame_size));
+
+framedSignal = framed_signal(1,:);
+subplot(2, 1, 2);
+plot(t1, framedSignal);
+title('First frame (Hamming)');
 grid;
