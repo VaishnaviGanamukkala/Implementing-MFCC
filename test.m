@@ -69,3 +69,23 @@ t2 = 0:1:n-1;
 plot(t2, signal_fft(1, :));
 title('First frame after applying fourier transform');
 grid;
+
+log_signal = log2(signal_fft);
+
+figure;
+subplot(2, 1, 1)
+plot(t2, log_signal(1, :));
+title('First frame after applying log');
+grid;
+
+mel_signal = hz2mel(log_signal);
+
+subplot(2, 1, 2);
+plot(t2, mel_signal(1, :));
+title('First frame after applying mel scale');
+grid;
+
+% Each row corresponds to the corresponding coefficients of the frame
+op = transpose(ifft(transpose(mel_signal), n));
+coefficients = op(:, 1:13);
+disp(coefficients(1, :));
